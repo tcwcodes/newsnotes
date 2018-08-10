@@ -5,8 +5,25 @@ $.getJSON("/articles", function(data) {
       // Display the apropos information on the page
       $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
     }
-  });
+});
   
+$(document).on("click", "#loadarticles", function() {
+    $.ajax({
+        method: "GET",
+        url: "/scrape/"
+    }).then(function() {
+        // window.location.reload();
+    })
+});
+
+$(document).on("click", "#cleararticles", function() {
+    $.ajax({
+        method: "GET",
+        url: "/clear/"
+    }).then(function() {
+        window.location.reload();
+    })
+});
   
   // Whenever someone clicks a p tag
   $(document).on("click", "p", function() {
@@ -45,6 +62,7 @@ $.getJSON("/articles", function(data) {
           $("#titleinput").val(data.note.title);
           // Place the body of the note in the body textarea
           $("#bodyinput").val(data.note.body);
+          $("#notes").append("<button data-id='" + data._id + "' id='clearnote'>Clear Note</button>");
         }
       });
   });
@@ -77,6 +95,8 @@ $.getJSON("/articles", function(data) {
     $("#titleinput").val("");
     $("#bodyinput").val("");
   });
+
+
   
   $(document).on("click", "#savearticle", function() {
     var thisId = $(this).attr("data-id");

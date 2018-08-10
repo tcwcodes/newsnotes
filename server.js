@@ -11,6 +11,7 @@ var db = require("./models");
 var PORT = 3000;
 
 var app = express();
+// var router = express.Router();
 
 app.use(logger("dev"));
 app.use(bodyparser.urlencoded({extended: true}));
@@ -47,6 +48,15 @@ app.get("/scrape", function(req, res) {
             .catch(function(err) {
                 return res.json(err);
             });
+            // db.Article.find({title: result.title})
+            // .then(function(articleFound) {
+            //     console.log(articleFound);
+            //     console.log(result.title + " already exists.")
+            //     result.found = true;
+            //     if (result.found === true) {
+            //     } else {
+            //     };
+            // });
         });
     });
     res.send("Scrape complete.")
@@ -61,7 +71,7 @@ app.get("/articles", function(req, res) {
     });
 });
 
-app.get("/articles/saved", function(req, res) {
+app.get("/saved", function(req, res) {
     db.Article.find({isSaved: true})
     .then(function(dbArticle) {
         res.json(dbArticle);
@@ -71,7 +81,8 @@ app.get("/articles/saved", function(req, res) {
     });
 });
 
-// app.get("/articles/saved", function(req, res) {
+// router.get("/articles/saved", function(req, res) {
+//     console.log("loading saved");
 //     db.Article.find({isSaved: true})
 //     .then(function(dbArticle) {
 //         var hbsObject = {

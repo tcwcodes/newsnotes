@@ -123,7 +123,7 @@ app.post("/articles/:id", function(req, res) {
 });
 
 //Save an article
-app.post("/articles/:id/save", function(req, res) {
+app.get("/articles/:id/save", function(req, res) {
     db.Article.findOne( {_id: req.params.id} )
     .then(function(dbArticle) {
         dbArticle.saveArticle();

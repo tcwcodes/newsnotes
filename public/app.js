@@ -1,10 +1,25 @@
 // Grab the articles as a json
-$.getJSON("/articles", function(data) {
-    // For each one
-    for (var i = 0; i < data.length; i++) {
-      // Display the apropos information on the page
-      $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
-    }
+
+$(document).on("click", "#viewallarticles", function() {
+    $("#articles").empty();
+    $.getJSON("/articles", function(data) {
+        // For each one
+        for (var i = 0; i < data.length; i++) {
+            // Display the apropos information on the page
+            $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
+        }
+    });
+});
+
+$(document).on("click", "#viewsavedarticles", function() {
+    $("#articles").empty();
+    $.getJSON("/saved", function(data) {
+        // For each one
+        for (var i = 0; i < data.length; i++) {
+            // Display the apropos information on the page
+            $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
+        }
+    });
 });
   
 $(document).on("click", "#loadarticles", function() {
@@ -12,7 +27,16 @@ $(document).on("click", "#loadarticles", function() {
         method: "GET",
         url: "/scrape/"
     }).then(function() {
-        // window.location.reload();
+        setTimeout(function() {
+            $("#articles").empty();
+            $.getJSON("/articles", function(data) {
+                // For each one
+                for (var i = 0; i < data.length; i++) {
+                // Display the apropos information on the page
+                $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
+                }
+            });
+        }, 2000);
     })
 });
 
@@ -21,7 +45,14 @@ $(document).on("click", "#cleararticles", function() {
         method: "GET",
         url: "/clear/"
     }).then(function() {
-        window.location.reload();
+        $("#articles").empty();
+        $.getJSON("/articles", function(data) {
+            // For each one
+            for (var i = 0; i < data.length; i++) {
+              // Display the apropos information on the page
+              $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
+            }
+        });
     })
 });
   
@@ -42,20 +73,18 @@ $(document).on("click", "#cleararticles", function() {
         console.log(data);
         // The title of the article
         $("#notes").append("<h2>" + data.title + "</h2>");
-        // An input to enter a new title
-        $("#notes").append("<input id='titleinput' name='title' >");
-        // A textarea to add a new note body
-        $("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
-        // A button to submit a new note, with the id of the article saved to it
-        $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
-
         // A button to save and unsave articles (depending on whether it is saved)
         if (data.isSaved === false) {
             $("#notes").append("<button data-id='" + data._id + "' id='savearticle'>Save Article</button>");
         } else {
             $("#notes").append("<button data-id='" + data._id + "' id='unsavearticle'>Unsave Article</button>");
         }
-        
+        // An input to enter a new title
+        $("#notes").append("<input id='titleinput' name='title' >");
+        // A textarea to add a new note body
+        $("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
+        // A button to submit a new note, with the id of the article saved to it
+        $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
         // If there's a note in the article
         if (data.note) {
           // Place the title of the note in the title input
@@ -96,26 +125,72 @@ $(document).on("click", "#cleararticles", function() {
     $("#bodyinput").val("");
   });
 
-
+    // When you click the clearnote button
+    $(document).on("click", "#clearnote", function() {
+        // Grab the id associated with the article from the submit button
+        var thisId = $(this).attr("data-id");
+      
+        // Run a POST request to change the note, using what's entered in the inputs
+        $.ajax({
+          method: "POST",
+          url: "/articles/" + thisId,
+          data: {
+            // Empty value
+            title: "",
+            // Empty value
+            body: ""
+          }
+        })
+          // With that done
+          .then(function(data) {
+            // Log the response
+            console.log(data);
+            // Empty the notes section
+            $("#notes").empty();
+          });
+      
+        // Also, remove the values entered in the input and textarea for note entry
+        $("#titleinput").val("");
+        $("#bodyinput").val("");
+      });
   
   $(document).on("click", "#savearticle", function() {
     var thisId = $(this).attr("data-id");
 
     $.ajax({
-        method: "POST",
+        method: "GET",
         url: "/articles/" + thisId + "/save",
     }).then(function(data) {
     console.log(data);
-    });
+    }).then(function() {
+        $("#notes").empty();
+        $("#articles").empty();
+        $.getJSON("/saved", function (data) {
+            // For each one
+            for (var i = 0; i < data.length; i++) {
+                // Display the apropos information on the page
+                $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
+            }
+        });
+    })
   })
 
-  $(document).on("click", "#unsavearticle", function() {
+$(document).on("click", "#unsavearticle", function() {
     var thisId = $(this).attr("data-id");
-
     $.ajax({
-        method: "POST",
+        method: "GET",
         url: "/articles/" + thisId + "/save",
-    }).then(function(data) {
-    console.log(data);
+    }).then(function (data) {
+        console.log(data);
+    }).then(function () {
+        $("#notes").empty();
+        $("#articles").empty();
+        $.getJSON("/articles", function (data) {
+            // For each one
+            for (var i = 0; i < data.length; i++) {
+                // Display the apropos information on the page
+                $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
+            }
+        });
     });
-  })
+});

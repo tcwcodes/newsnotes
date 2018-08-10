@@ -81,20 +81,6 @@ app.get("/saved", function(req, res) {
     });
 });
 
-// router.get("/articles/saved", function(req, res) {
-//     console.log("loading saved");
-//     db.Article.find({isSaved: true})
-//     .then(function(dbArticle) {
-//         var hbsObject = {
-//             articles: dbArticle
-//         }
-//         res.render("saved", hbsObject)
-//     })
-//     .catch(function(err) {
-//         res.json(err);
-//     });
-// });
-
 app.get("/articles/:id", function(req, res) {
     db.Article.findOne({_id: req.params.id})
     .populate("note")

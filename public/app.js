@@ -1,23 +1,25 @@
 // Grab the articles as a json
 
 $(document).on("click", "#viewallarticles", function() {
+    $("#notes").empty();
     $("#articles").empty();
     $.getJSON("/articles", function(data) {
         // For each one
         for (var i = 0; i < data.length; i++) {
             // Display the apropos information on the page
-            $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
+            $("#articles").append("<div><h3 data-id='" + data[i]._id + "'>" + data[i].title + "</h3><h4>" + data[i].summary + " <a href='" + data[i].link + "'>Read more.</a></h4><br></div>");
         }
     });
 });
 
 $(document).on("click", "#viewsavedarticles", function() {
+    $("#notes").empty();
     $("#articles").empty();
     $.getJSON("/saved", function(data) {
         // For each one
         for (var i = 0; i < data.length; i++) {
             // Display the apropos information on the page
-            $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
+            $("#articles").append("<div><h3 data-id='" + data[i]._id + "'>" + data[i].title + "</h3><h4>" + data[i].summary + " <a href='" + data[i].link + "'>Read more.</a></h4><br></div>");
         }
     });
 });
@@ -28,12 +30,13 @@ $(document).on("click", "#loadarticles", function() {
         url: "/scrape/"
     }).then(function() {
         setTimeout(function() {
+            $("#notes").empty();
             $("#articles").empty();
             $.getJSON("/articles", function(data) {
                 // For each one
                 for (var i = 0; i < data.length; i++) {
                 // Display the apropos information on the page
-                $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
+                $("#articles").append("<div><h3 data-id='" + data[i]._id + "'>" + data[i].title + "</h3><h4>" + data[i].summary + " <a href='" + data[i].link + "'>Read more.</a></h4><br></div>");
                 }
             });
         }, 2000);
@@ -45,19 +48,20 @@ $(document).on("click", "#cleararticles", function() {
         method: "GET",
         url: "/clear/"
     }).then(function() {
+        $("#notes").empty();
         $("#articles").empty();
         $.getJSON("/articles", function(data) {
             // For each one
             for (var i = 0; i < data.length; i++) {
               // Display the apropos information on the page
-              $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
+              $("#articles").append("<div><h3 data-id='" + data[i]._id + "'>" + data[i].title + "</h3><h4>" + data[i].summary + " <a href='" + data[i].link + "'>Read more.</a></h4><br></div>");
             }
         });
     });
 });
   
-// Whenever someone clicks a p tag
-$(document).on("click", "p", function() {
+// Whenever someone clicks an h3 tag
+$(document).on("click", "h3", function() {
 // Empty the notes from the note section
     $("#notes").empty();
     // Save the id from the p tag
@@ -72,17 +76,11 @@ $(document).on("click", "p", function() {
     .then(function(data) {
         console.log(data);
         // The title of the article
-        $("#notes").append("<h2>" + data.title + "</h2>");
-        // A button to save and unsave articles (depending on whether it is saved)
-        if (data.isSaved === false) {
-            $("#notes").append("<button data-id='" + data._id + "' id='savearticle'>Save Article</button>");
-        } else {
-            $("#notes").append("<button data-id='" + data._id + "' id='unsavearticle'>Unsave Article</button>");
-        }
+        $("#notes").append("<h3>" + data.title + "</h3>");
         // An input to enter a new title
-        $("#notes").append("<input id='titleinput' name='title' >");
+        $("#notes").append("Note title: <input class='col-md-12' id='titleinput' name='title' >");
         // A textarea to add a new note body
-        $("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
+        $("#notes").append("Note body: <textarea class='col-md-12' id='bodyinput' name='body'></textarea>");
         // A button to submit a new note, with the id of the article saved to it
         $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
         // If there's a note in the article
@@ -93,6 +91,12 @@ $(document).on("click", "p", function() {
             $("#bodyinput").val(data.note.body);
             $("#notes").append("<button data-id='" + data._id + "' id='clearnote'>Clear Note</button>");
         };
+                // A button to save and unsave articles (depending on whether it is saved)
+        if (data.isSaved === false) {
+            $("#notes").append("<button data-id='" + data._id + "' id='savearticle'>Save Article</button>");
+        } else {
+            $("#notes").append("<button data-id='" + data._id + "' id='unsavearticle'>Unsave Article</button>");
+        }
     });
 });
   
@@ -165,7 +169,7 @@ $(document).on("click", "#savearticle", function() {
             // For each one
             for (var i = 0; i < data.length; i++) {
                 // Display the apropos information on the page
-                $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
+                $("#articles").append("<div><h3 data-id='" + data[i]._id + "'>" + data[i].title + "</h3><h4>" + data[i].summary + " <a href='" + data[i].link + "'>Read more.</a></h4><br></div>");
             }
         });
     });
@@ -185,7 +189,7 @@ $(document).on("click", "#unsavearticle", function() {
             // For each one
             for (var i = 0; i < data.length; i++) {
                 // Display the apropos information on the page
-                $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
+                $("#articles").append("<div><h3 data-id='" + data[i]._id + "'>" + data[i].title + "</h3><h4>" + data[i].summary + " <a href='" + data[i].link + "'>Read more.</a></h4><br></div>");
             }
         });
     });

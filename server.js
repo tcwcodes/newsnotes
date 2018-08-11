@@ -11,7 +11,6 @@ var db = require("./models");
 var PORT = 3000;
 
 var app = express();
-// var router = express.Router();
 
 app.use(logger("dev"));
 app.use(bodyparser.urlencoded({extended: true}));
@@ -48,15 +47,6 @@ app.get("/scrape", function(req, res) {
             .catch(function(err) {
                 return res.json(err);
             });
-            // db.Article.find({title: result.title})
-            // .then(function(articleFound) {
-            //     console.log(articleFound);
-            //     console.log(result.title + " already exists.")
-            //     result.found = true;
-            //     if (result.found === true) {
-            //     } else {
-            //     };
-            // });
         });
     });
     res.send("Scrape complete.")
